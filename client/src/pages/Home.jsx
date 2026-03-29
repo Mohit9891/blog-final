@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import PostDetail from './PostDetail'
 
 // ── Sample data ──────────────────────────────────────────────────────────────
 const featuredPost = {
@@ -137,6 +138,7 @@ const Home = () => {
   const [activeTag, setActiveTag] = useState('All')
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
+  const [selectedPost, setSelectedPost] = useState(null)
 
   const filtered =
     activeTag === 'All' ? recentPosts : recentPosts.filter((p) => p.tag === activeTag)
@@ -453,6 +455,7 @@ const Home = () => {
           <article
             className="fade-up d1"
             ref={reveal}
+            onClick={() => setSelectedPost(featuredPost)}
             style={{
               position: 'relative',
               background: '#1c1812',
@@ -608,6 +611,7 @@ const Home = () => {
               <article
                 key={post.id}
                 ref={reveal}
+                onClick={() => setSelectedPost(post)}
                 className={`fade-up d${(i % 4) + 1} post-row`}
               >
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 20 }}>
@@ -968,6 +972,10 @@ const Home = () => {
         </footer>
 
       </main>
+
+      {selectedPost && (
+        <PostDetail post={selectedPost} onClose={() => setSelectedPost(null)} />
+      )}
     </>
   )
 }

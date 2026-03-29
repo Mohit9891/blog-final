@@ -131,75 +131,6 @@ const ProgressBar = () => {
   )
 }
 
-// ── Navbar ────────────────────────────────────────────────────────────────────
-const Navbar = () => {
-  const [scrolled, setScrolled] = useState(false)
-  useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 24)
-    window.addEventListener('scroll', fn, { passive: true })
-    return () => window.removeEventListener('scroll', fn)
-  }, [])
-  return (
-    <nav
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 100,
-        padding: '0 32px',
-        height: 60,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        background: scrolled ? 'rgba(253,250,245,0.92)' : 'transparent',
-        backdropFilter: scrolled ? 'blur(12px)' : 'none',
-        borderBottom: scrolled ? '1px solid #e8e0d0' : '1px solid transparent',
-        transition: 'all 0.35s ease',
-      }}
-    >
-      <a
-        href="#"
-        style={{
-          fontFamily: "'Playfair Display', Georgia, serif",
-          fontSize: 20,
-          fontWeight: 700,
-          color: '#1c1812',
-          textDecoration: 'none',
-          letterSpacing: '-0.01em',
-          fontStyle: 'italic',
-        }}
-      >
-        Alex Rivera
-      </a>
-
-      <div style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
-        {['Writing', 'About', 'Subscribe'].map((item, i) => (
-          <a
-            key={item}
-            href="#"
-            style={{
-              fontSize: 12,
-              fontWeight: 500,
-              letterSpacing: '0.14em',
-              textTransform: 'uppercase',
-              color: i === 2 ? '#fdfaf5' : '#1c1812',
-              textDecoration: 'none',
-              padding: i === 2 ? '7px 18px' : undefined,
-              background: i === 2 ? '#1c1812' : 'transparent',
-              transition: 'opacity 0.2s',
-            }}
-            onMouseEnter={(e) => (e.target.style.opacity = 0.65)}
-            onMouseLeave={(e) => (e.target.style.opacity = 1)}
-          >
-            {item}
-          </a>
-        ))}
-      </div>
-    </nav>
-  )
-}
-
 // ── Main component ────────────────────────────────────────────────────────────
 const Home = () => {
   const reveal = useReveal()
@@ -263,12 +194,6 @@ const Home = () => {
           animation: marquee 30s linear infinite;
         }
         .marquee-track:hover { animation-play-state: paused; }
-
-        /* Featured card shimmer */
-        @keyframes shimmer {
-          0%   { background-position: -400px 0; }
-          100% { background-position: 400px 0; }
-        }
 
         /* Post hover */
         .post-row {
@@ -370,7 +295,6 @@ const Home = () => {
       `}</style>
 
       <ProgressBar />
-      <Navbar />
 
       <main>
 

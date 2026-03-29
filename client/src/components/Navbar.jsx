@@ -6,8 +6,8 @@ const Navbar = () => {
   const navLinks = [
     { label: 'Home', href: '#', active: true },
     { label: 'Blog', href: '#' },
-    { label: 'About', href: '#' },
-    
+    { label: 'About', href: '#about' },
+    { label: 'Contact', href: '#' },
   ]
 
   return (
@@ -52,22 +52,14 @@ const Navbar = () => {
             ))}
           </ul>
 
-          {/* CTA Button */}
-          <a
-            href="#"
-            className="hidden md:inline-flex items-center gap-2 text-xs font-medium tracking-widest uppercase bg-[#1a1814] text-[#faf8f4] px-5 py-2.5 hover:bg-[#b8955a] transition-colors duration-300"
-          >
-            Contact
-          </a>
-
           {/* Hamburger */}
           <button
             onClick={() => setOpen(!open)}
             className="md:hidden flex flex-col gap-1.5 p-1"
           >
-            <span className={`block w-6 h-px bg-[#1a1814] ${open ? 'rotate-45 translate-y-2' : ''}`} />
-            <span className={`block w-6 h-px bg-[#1a1814] ${open ? 'opacity-0' : ''}`} />
-            <span className={`block w-6 h-px bg-[#1a1814] ${open ? '-rotate-45 -translate-y-2' : ''}`} />
+            <span className={`block w-6 h-px bg-[#1a1814] transition-all duration-300 ${open ? 'rotate-45 translate-y-2' : ''}`} />
+            <span className={`block w-6 h-px bg-[#1a1814] transition-all duration-300 ${open ? 'opacity-0' : ''}`} />
+            <span className={`block w-6 h-px bg-[#1a1814] transition-all duration-300 ${open ? '-rotate-45 -translate-y-2' : ''}`} />
           </button>
         </div>
 
@@ -85,13 +77,6 @@ const Navbar = () => {
                 {link.label}
               </a>
             ))}
-
-            <a
-              href="#"
-              className="mt-2 inline-flex items-center gap-2 text-xs font-medium tracking-widest uppercase bg-[#1a1814] text-[#faf8f4] px-5 py-3 w-fit hover:bg-[#b8955a]"
-            >
-              Contact
-            </a>
           </div>
         )}
       </nav>

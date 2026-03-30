@@ -4,6 +4,7 @@ import Footer from './components/Footer'
 import Home from './pages/Home'
 import Blog from './pages/Blog'
 import PostDetail from './pages/PostDetail'
+import Admin from './pages/Admin'
 // import About from './pages/About'
 // import NotFound from './pages/NotFound'
 
@@ -16,6 +17,7 @@ export default function App() {
           <Route path="/"            element={<Home />} />
           <Route path="/blog"        element={<Blog />} />
           <Route path="/blog/:slug"  element={<PostDetail />} />
+          <Route path="/admin" element={<Admin />} />
           {/* <Route path="/about"       element={<About />} /> */}
           {/* <Route path="*"            element={<NotFound />} /> */}
         </Routes>

@@ -12,7 +12,7 @@ const tagColors = {
   Notes: { bg: '#f4f0ec', text: '#6b5a47', border: '#c4a882' },
 }
 
-const emptyForm = { tag: 'Essay', title: '', excerpt: '', date: '', read_time: '' }
+const emptyForm = { tag: 'Essay', title: '', excerpt: '', content: '', date: '', read_time: '' }
 
 const AdminDashboard = ({ user, onLogout }) => {
   const [posts, setPosts] = useState([])
@@ -55,6 +55,7 @@ const AdminDashboard = ({ user, onLogout }) => {
       tag: post.tag,
       title: post.title,
       excerpt: post.excerpt || '',
+      content: post.content || '',
       date: post.date || '',
       read_time: post.read_time || '',
     })
@@ -146,6 +147,11 @@ const AdminDashboard = ({ user, onLogout }) => {
           line-height: 1.6;
         }
         .dash-textarea:focus { border-color: #b8955a; }
+
+        .dash-textarea.large {
+          min-height: 300px;
+          font-size: 13px;
+        }
 
         .btn-primary {
           display: inline-flex; align-items: center; gap: 7px;
@@ -427,6 +433,17 @@ const AdminDashboard = ({ user, onLogout }) => {
                   placeholder="A short summary shown on the homepage..."
                   value={form.excerpt}
                   onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
+                />
+              </div>
+
+              {/* Content / Full Post Body */}
+              <div>
+                <label className="field-label">Content</label>
+                <textarea
+                  className="dash-textarea large"
+                  placeholder="Write your full post here... You can use plain text, markdown, or HTML."
+                  value={form.content}
+                  onChange={(e) => setForm({ ...form, content: e.target.value })}
                 />
               </div>
 

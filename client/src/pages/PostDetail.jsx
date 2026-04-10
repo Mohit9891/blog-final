@@ -1,58 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-// ── Mock post data ────────────────────────────────────────────────────────────
-const post = {
-  tag: 'Essay',
-  title: 'On the quiet art of paying attention to ordinary things',
-  date: 'March 18, 2026',
-  readTime: '7 min read',
-  author: 'Alex Rivera',
-  content: [
-    {
-      type: 'lead',
-      text: 'There is a particular kind of blindness that comes not from darkness, but from speed. We move through our days so quickly that the world becomes a blur — a smear of colour and obligation.',
-    },
-    {
-      type: 'p',
-      text: "I first noticed this on a Tuesday morning, waiting for coffee to brew. I had been standing at the counter for four minutes — long enough to scroll through an entire news cycle — and I had not once looked out the window beside me. When I finally did, there was a pigeon on the ledge, perfectly still, watching the street below with an attention I could only envy.",
-    },
-    {
-      type: 'h2',
-      text: 'The cost of chronic busyness',
-    },
-    {
-      type: 'p',
-      text: "Psychologists who study attention have found that humans spend nearly half their waking hours thinking about something other than what they're actually doing. This mind-wandering correlates strongly with lower reported happiness — not because the thoughts are dark, but because presence itself is a kind of pleasure we rarely account for.",
-    },
-    {
-      type: 'blockquote',
-      text: 'The moment one gives close attention to anything, even a blade of grass, it becomes a mysterious, awesome, indescribably magnificent world in itself.',
-      author: 'Henry Miller',
-    },
-    {
-      type: 'h2',
-      text: 'A practice, not a philosophy',
-    },
-    {
-      type: 'p',
-      text: 'I am not arguing for slowness as an ideology. I am arguing for it as a practice — something you do for ten minutes on a Tuesday, not something you build an identity around. The goal is not to become a contemplative monk. The goal is simply to occasionally notice the pigeon.',
-    },
-    {
-      type: 'p',
-      text: 'Try it now, if you like. Put this down. Look at whatever is in front of you — really look, as if you were going to describe it to someone who had never seen it. Give it sixty seconds. Then come back. Something will have shifted. Not dramatically. But enough.',
-    },
-  ],
-}
-
 const tagColors = {
   Essay: { bg: '#f5efe4', text: '#8b6914', border: '#d4b87a' },
   Craft: { bg: '#edf4f0', text: '#2d6a4f', border: '#74c69d' },
   Tech:  { bg: '#eef2fa', text: '#2c4fa3', border: '#7fa6e0' },
   Life:  { bg: '#faeef4', text: '#8b2252', border: '#d88fb8' },
+  Books: { bg: '#f0eefc', text: '#4a3594', border: '#a899e8' },
+  Notes: { bg: '#f4f0ec', text: '#6b5a47', border: '#c4a882' },
 }
 
 const Tag = ({ label }) => {
-  const c = tagColors[label] || tagColors['Essay']
+  const c = tagColors[label] || tagColors['Notes']
   return (
     <span style={{
       background: c.bg, color: c.text, border: `1px solid ${c.border}`,
@@ -93,7 +51,7 @@ const ReadingBar = ({ containerRef }) => {
 }
 
 // ── PostDetail popup panel ────────────────────────────────────────────────────
-const PostDetail = ({ onClose }) => {
+const PostDetail = ({ post, onClose }) => {
   const scrollRef = useRef(null)
   const [visible, setVisible] = useState(false)
   const [copied, setCopied] = useState(false)
@@ -121,6 +79,12 @@ const PostDetail = ({ onClose }) => {
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
+
+  if (!post) return null
+
+  // Get initials from author name or use first letter of title
+  const authorName = post.author || 'Mohit'
+  const initials = authorName.split(' ').map(n => n[0]).join('').toUpperCase()
 
   return (
     <>
@@ -214,9 +178,13 @@ const PostDetail = ({ onClose }) => {
           {/* Meta row */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 22 }}>
             <Tag label={post.tag} />
-            <span style={{ fontSize: 11, color: 'rgba(28,24,18,0.38)', letterSpacing: '0.03em' }}>{post.date}</span>
+            <span style={{ fontSize: 11, color: 'rgba(28,24,18,0.38)', letterSpacing: '0.03em' }}>
+              {post.date}
+            </span>
             <span style={{ color: 'rgba(28,24,18,0.18)', fontSize: 11 }}>·</span>
-            <span style={{ fontSize: 11, color: 'rgba(28,24,18,0.38)' }}>{post.readTime}</span>
+            <span style={{ fontSize: 11, color: 'rgba(28,24,18,0.38)' }}>
+              {post.read_time}
+            </span>
           </div>
 
           {/* Gold accent */}
@@ -246,11 +214,11 @@ const PostDetail = ({ onClose }) => {
               fontSize: 13, fontStyle: 'italic', color: '#1c1812', fontWeight: 700,
               flexShrink: 0,
             }}>
-              A
+              {initials}
             </div>
             <div>
               <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: '#1c1812', fontFamily: "'Instrument Sans', sans-serif" }}>
-                {post.author}
+                {authorName}
               </p>
               <p style={{ margin: 0, fontSize: 10, color: 'rgba(28,24,18,0.38)', letterSpacing: '0.1em', textTransform: 'uppercase', fontFamily: "'Instrument Sans', sans-serif" }}>
                 Personal Blog
@@ -258,48 +226,63 @@ const PostDetail = ({ onClose }) => {
             </div>
           </div>
 
-          {/* Article body */}
+          {/* Article body - display excerpt as lead */}
           <div className="pd-prose" style={{
             fontFamily: "'Instrument Sans', sans-serif",
             color: 'rgba(28,24,18,0.72)',
           }}>
-            {post.content.map((block, i) => {
-              if (block.type === 'lead') return (
-                <p key={i} style={{
-                  fontFamily: "'Playfair Display', Georgia, serif",
-                  fontSize: 'clamp(1.05rem, 2.2vw, 1.18rem)',
-                  fontStyle: 'italic', color: '#1c1812',
-                  lineHeight: 1.78, marginBottom: '1.65em',
-                }}>
-                  {block.text}
-                </p>
-              )
-              if (block.type === 'h2') return <h2 key={i}>{block.text}</h2>
-              if (block.type === 'blockquote') return (
-                <blockquote key={i} style={{
-                  margin: '2.2em 0', padding: '22px 26px',
-                  borderLeft: '2px solid #b8955a',
-                  background: '#f7f2e8',
-                }}>
-                  <p style={{
+            {/* Lead paragraph */}
+            <p style={{
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontSize: 'clamp(1.05rem, 2.2vw, 1.18rem)',
+              fontStyle: 'italic', color: '#1c1812',
+              lineHeight: 1.78, marginBottom: '1.65em',
+            }}>
+              {post.excerpt}
+            </p>
+
+            {/* Content from JSON if available */}
+            {post.content && typeof post.content === 'string' ? (
+              <div dangerouslySetInnerHTML={{ __html: post.content }} />
+            ) : post.content && Array.isArray(post.content) ? (
+              post.content.map((block, i) => {
+                if (block.type === 'lead') return (
+                  <p key={i} style={{
                     fontFamily: "'Playfair Display', Georgia, serif",
-                    fontSize: 'clamp(0.95rem, 2vw, 1.1rem)',
+                    fontSize: 'clamp(1.05rem, 2.2vw, 1.18rem)',
                     fontStyle: 'italic', color: '#1c1812',
-                    lineHeight: 1.72, margin: '0 0 10px',
+                    lineHeight: 1.78, marginBottom: '1.65em',
                   }}>
-                    "{block.text}"
+                    {block.text}
                   </p>
-                  <cite style={{
-                    fontSize: 10, fontStyle: 'normal', fontWeight: 600,
-                    letterSpacing: '0.16em', textTransform: 'uppercase', color: '#b8955a',
-                    fontFamily: "'Instrument Sans', sans-serif",
+                )
+                if (block.type === 'h2') return <h2 key={i}>{block.text}</h2>
+                if (block.type === 'blockquote') return (
+                  <blockquote key={i} style={{
+                    margin: '2.2em 0', padding: '22px 26px',
+                    borderLeft: '2px solid #b8955a',
+                    background: '#f7f2e8',
                   }}>
-                    — {block.author}
-                  </cite>
-                </blockquote>
-              )
-              return <p key={i}>{block.text}</p>
-            })}
+                    <p style={{
+                      fontFamily: "'Playfair Display', Georgia, serif",
+                      fontSize: 'clamp(0.95rem, 2vw, 1.1rem)',
+                      fontStyle: 'italic', color: '#1c1812',
+                      lineHeight: 1.72, margin: '0 0 10px',
+                    }}>
+                      "{block.text}"
+                    </p>
+                    <cite style={{
+                      fontSize: 10, fontStyle: 'normal', fontWeight: 600,
+                      letterSpacing: '0.16em', textTransform: 'uppercase', color: '#b8955a',
+                      fontFamily: "'Instrument Sans', sans-serif",
+                    }}>
+                      — {block.author}
+                    </cite>
+                  </blockquote>
+                )
+                return <p key={i}>{block.text}</p>
+              })
+            ) : null}
           </div>
 
           {/* Footer */}
@@ -314,7 +297,7 @@ const PostDetail = ({ onClose }) => {
               fontSize: 12, fontStyle: 'italic',
               color: 'rgba(28,24,18,0.28)', margin: 0,
             }}>
-              Writing since 2020 · Alex Rivera
+              Writing since 2023 · {authorName}
             </p>
             <button className="pd-btn dark" onClick={handleClose}>
               ← All posts
@@ -326,40 +309,4 @@ const PostDetail = ({ onClose }) => {
   )
 }
 
-// ── Demo wrapper ──────────────────────────────────────────────────────────────
-// In production, import PostDetail and render it conditionally:
-//   {selectedPost && <PostDetail post={selectedPost} onClose={() => setSelectedPost(null)} />}
-const Demo = () => {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <div style={{
-      fontFamily: "'Instrument Sans', sans-serif",
-      minHeight: '100vh', background: '#fdfaf5',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      flexDirection: 'column', gap: 16,
-    }}>
-      <p style={{ fontSize: 11, letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(28,24,18,0.35)' }}>
-        Click to preview
-      </p>
-      <button
-        onClick={() => setOpen(true)}
-        style={{
-          fontSize: 11, fontFamily: "'Instrument Sans', sans-serif",
-          fontWeight: 600, letterSpacing: '0.2em', textTransform: 'uppercase',
-          background: '#1c1812', color: '#fdfaf5',
-          border: 'none', padding: '14px 32px', cursor: 'pointer',
-          transition: 'background 0.2s',
-        }}
-        onMouseEnter={(e) => (e.currentTarget.style.background = '#b8955a')}
-        onMouseLeave={(e) => (e.currentTarget.style.background = '#1c1812')}
-      >
-        Open Post →
-      </button>
-
-      {open && <PostDetail onClose={() => setOpen(false)} />}
-    </div>
-  )
-}
-
-export default Demo
+export default PostDetail
